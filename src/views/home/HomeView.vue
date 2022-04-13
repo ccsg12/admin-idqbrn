@@ -29,6 +29,7 @@
           <v-select
             v-model="diseaseFilter"
             :items="diseases"
+            bg-color="#fff"
             density="compact"
             label="Doença"
             variant="outlined"
@@ -37,6 +38,7 @@
           <v-select
             v-model="stateFilter"
             :items="states"
+            bg-color="#fff"
             density="compact"
             label="Estado"
             variant="outlined"
@@ -44,6 +46,7 @@
 
           <v-select
             v-model="cityFilter"
+            bg-color="#fff"
             density="compact"
             label="Cidade"
             variant="outlined"
@@ -72,12 +75,16 @@ import {
   LTileLayer,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
+import { mapActions } from "pinia";
 
+import { useNavBarStore } from "@/stores";
+
+import { InfoCard } from "@/components";
 import "./styles.scss";
-import { InfoCard } from "@/components/infoCard";
 
 export default defineComponent({
   name: "HomeView",
+
   components: {
     LMap,
     LTileLayer,
@@ -86,6 +93,7 @@ export default defineComponent({
     LControlLayers,
     InfoCard,
   },
+
   data() {
     return {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -181,11 +189,19 @@ export default defineComponent({
       ],
     };
   },
-  async created() {
+
+  async mounted() {
+    this.setShowNavBar(false);
+
     const response = await fetch(
       "https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-33-mun.json"
     );
+
     this.geoJson = await response.json();
+  },
+
+  methods: {
+    ...mapActions(useNavBarStore, ["setShowNavBar"]),
   },
 });
 </script>

@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { HomeView } from "@/views/home";
-import { LoginView } from "@/views/login";
-import { RegisterDiseaseView } from "@/views/registerDisease";
+
+import { useUserStore } from "@/stores";
+
+import { AdminView, HomeView, LoginView } from "@/views";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,7 +20,14 @@ const router = createRouter({
     {
       path: "/admin",
       name: "admin",
-      component: RegisterDiseaseView,
+      component: AdminView,
+      beforeEnter: () => {
+        const store = useUserStore();
+
+        if (!store.isAuthenticated) {
+          return { name: "login" };
+        }
+      },
     },
   ],
 });

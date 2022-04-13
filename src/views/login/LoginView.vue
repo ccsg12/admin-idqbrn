@@ -46,6 +46,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { mapStores } from "pinia";
+
+import type { User } from "@/stores";
+import { useNavBarStore, useUserStore } from "@/stores";
 
 import "./styles.scss";
 
@@ -60,9 +64,24 @@ export default defineComponent({
     };
   },
 
+  mounted() {
+    this.navBarStore.setShowNavBar(false);
+  },
+
+  computed: {
+    ...mapStores(useNavBarStore, useUserStore),
+  },
+
   methods: {
     login() {
-      this.$router.push("/");
+      const user: User = {
+        id: 1,
+        name: "Caio Cesar",
+      };
+
+      this.userStore.setUser(user);
+
+      this.$router.push({ name: "admin" });
     },
   },
 });
