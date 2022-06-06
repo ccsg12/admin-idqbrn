@@ -76,11 +76,9 @@ import {
   LTileLayer,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 
-import axios from "axios";
-
-import { useNavBarStore } from "@/stores";
+import { useDiseaseStore, useNavBarStore } from "@/stores";
 
 import { InfoCard } from "@/components";
 import "./styles.scss";
@@ -141,7 +139,7 @@ export default defineComponent({
         "Tocantins",
       ],
       cityFilter: "",
-      cities:[],
+      cities: [],
       teste: null,
       covidData: [
         {
@@ -195,24 +193,17 @@ export default defineComponent({
     };
   },
 
+  computed: {
+    ...mapState(useDiseaseStore, ["diseases"]),
+  },
+
   async mounted() {
     this.setShowNavBar(false);
-console.log("sas");
+
     const response = await fetch(
       "https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-33-mun.json"
     );
     this.geoJson = await response.json();
-    axios
-      .get('http://172.21.96.1:3002/api/diseases')
-      .then(response => 
-      { 
-        this.cities = response.data.map(x => x.nome);
-        console.log(this.cities);
-      }
-      )
-  
-    
-
   },
 
   methods: {
