@@ -46,6 +46,7 @@
 
           <v-select
             v-model="cityFilter"
+            :items="cities"
             bg-color="#fff"
             density="compact"
             label="Cidade"
@@ -76,6 +77,8 @@ import {
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 import { mapActions } from "pinia";
+
+import axios from "axios";
 
 import { useNavBarStore } from "@/stores";
 
@@ -138,6 +141,8 @@ export default defineComponent({
         "Tocantins",
       ],
       cityFilter: "",
+      cities:[],
+      teste: null,
       covidData: [
         {
           title: "Óbitos confirmados",
@@ -192,12 +197,22 @@ export default defineComponent({
 
   async mounted() {
     this.setShowNavBar(false);
-
+console.log("sas");
     const response = await fetch(
       "https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-33-mun.json"
     );
-
     this.geoJson = await response.json();
+    axios
+      .get('http://172.21.96.1:3002/api/diseases')
+      .then(response => 
+      { 
+        this.cities = response.data.map(x => x.nome);
+        console.log(this.cities);
+      }
+      )
+  
+    
+
   },
 
   methods: {
