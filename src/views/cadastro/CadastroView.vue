@@ -4,11 +4,27 @@
       <v-col class="d-flex flex-column justify-center" cols="12" md="6" xl="4">
         <div class="login-form-container">
           <div class="form-header">
-            <h2 class="header-title">Entre no admin</h2>
-            <span class="header-subtitle">Insira seu e-mail e senha</span>
+            <h2 class="header-title">Cadastro de novo usuário</h2>
+            <span class="header-subtitle">Insira os dados do novo usuário</span>
           </div>
 
           <v-form>
+            <v-text-field
+              v-model="name"
+              density="compact"
+              label="Nome"
+              placeholder="Joao Antunes"
+              variant="outlined"
+            />
+
+            <v-text-field
+              v-model="funcao"
+              density="compact"
+              label="Função ID"
+              placeholder=""
+              variant="outlined"
+            />
+
             <v-text-field
               v-model="email"
               density="compact"
@@ -36,8 +52,9 @@
             rounded="lg"
             size="large"
             @click="login"
-            >Entrar
+            >Cadastrar
           </v-btn>
+          
         </div>
       </v-col>
     </v-row>
@@ -47,6 +64,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { mapStores } from "pinia";
+
 
 import type { User } from "@/stores";
 import { useNavBarStore, useUserStore } from "@/stores";
@@ -58,7 +76,9 @@ export default defineComponent({
 
   data() {
     return {
+      name: "",
       email: "",
+      funcao:"",
       password: "",
       passwordVisible: false,
     };
@@ -74,14 +94,7 @@ export default defineComponent({
 
   methods: {
     login() {
-      const user: User = {
-        id: 1,
-        name: "Caio Cesar",
-      };
-
-      this.userStore.setUser(user);
-
-      this.$router.push({ name: "admin" });
+     
     },
   },
 });
