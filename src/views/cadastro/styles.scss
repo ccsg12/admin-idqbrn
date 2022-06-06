@@ -1,0 +1,29 @@
+@import "@/styles";
+
+.login-form-container {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid $light-gray;
+  max-height: 582px;
+  padding: 32px;
+  width: 100%;
+
+  .form-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+
+    .header-title {
+      font-size: 1.5rem;
+    }
+
+    .header-subtitle {
+      font-size: 0.9rem;
+    }
+  }
+
+  .v-icon {
+    cursor: pointer;
+  }
+}

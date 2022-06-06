@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores";
 
-import { AdminView, HomeView, LoginView } from "@/views";
+import { AdminView, HomeView, LoginView, CadastroView } from "@/views";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +16,11 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: LoginView,
+    },
+    {
+      path: "/cadastro",
+      name: "cadastro",
+      component: CadastroView,
     },
     {
       path: "/admin",
