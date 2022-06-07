@@ -26,26 +26,33 @@
 
       <v-col cols="12" md="4">
         <multiselect
-          v-model="diseaseFilter"
+          v-model="diseaseChosen"
           :options="diseases"
           class="mb-4"
           label="name"
+          object
           placeholder="Doenças"
           value-prop="id"
         />
 
         <multiselect
-          v-model="stateFilter"
-          :options="states"
+          v-model="stateChosen"
+          :options="filteredStates"
           class="my-4"
+          label="name"
+          object
           placeholder="Estado"
+          value-prop="abbreviation"
         />
 
         <multiselect
-          v-model="cityFilter"
-          :options="cities"
+          v-model="cityChosen"
+          :options="filteredCities"
           class="mt-4"
+          label="name"
+          object
           placeholder="Cidade"
+          value-prop="id"
         />
 
         <info-card
@@ -73,7 +80,9 @@ import "leaflet/dist/leaflet.css";
 import Multiselect from "@vueform/multiselect";
 import { mapActions, mapState } from "pinia";
 
+import type { City, Disease } from "@/stores";
 import { useDiseaseStore, useNavBarStore } from "@/stores";
+import type { State } from "./types";
 
 import { InfoCard } from "@/components";
 import "./styles.scss";
@@ -102,39 +111,111 @@ export default defineComponent({
         color: "red",
       },
       geoJson: null,
-      diseaseFilter: null,
-      stateFilter: "",
+      diseaseChosen: null as Disease | null,
+      stateChosen: null,
       states: [
-        "Acre",
-        "Alagoas",
-        "Amapá",
-        "Amazonas",
-        "Bahia",
-        "Ceará",
-        "Distrito Federal",
-        "Espírito Santo",
-        "Goiás",
-        "Maranhão",
-        "Mato Grosso",
-        "Mato Grosso do Sul",
-        "Minas Gerais",
-        "Pará",
-        "Paraíba",
-        "Paraná",
-        "Pernambuco",
-        "Piauí",
-        "Rio de Janeiro",
-        "Rio Grande do Norte",
-        "Rio Grande do Sul",
-        "Rondônia",
-        "Roraima",
-        "Santa Catarina",
-        "São Paulo",
-        "Sergipe",
-        "Tocantins",
+        {
+          name: "Acre",
+          abbreviation: "AC",
+        },
+        {
+          name: "Alagoas",
+          abbreviation: "AL",
+        },
+        {
+          name: "Bahia",
+          abbreviation: "BA",
+        },
+        {
+          name: "Ceará",
+          abbreviation: "CE",
+        },
+        {
+          name: "Distrito Federal",
+          abbreviation: "DF",
+        },
+        {
+          name: "Espírito Santo",
+          abbreviation: "ES",
+        },
+        {
+          name: "Goiás",
+          abbreviation: "GO",
+        },
+        {
+          name: "Maranhão",
+          abbreviation: "MA",
+        },
+        {
+          name: "Mato Grosso",
+          abbreviation: "MT",
+        },
+        {
+          name: "Mato Grosso do Sul",
+          abbreviation: "MS",
+        },
+        {
+          name: "Minas Gerais",
+          abbreviation: "MG",
+        },
+        {
+          name: "Pará",
+          abbreviation: "PA",
+        },
+        {
+          name: "Paraíba",
+          abbreviation: "PB",
+        },
+        {
+          name: "Paraná",
+          abbreviation: "PR",
+        },
+        {
+          name: "Pernambuco",
+          abbreviation: "PE",
+        },
+        {
+          name: "Piauí",
+          abbreviation: "PI",
+        },
+        {
+          name: "Rio de Janeiro",
+          abbreviation: "RJ",
+        },
+        {
+          name: "Rio Grande do Norte",
+          abbreviation: "RN",
+        },
+        {
+          name: "Rio Grande do Sul",
+          abbreviation: "RS",
+        },
+        {
+          name: "Rondônia",
+          abbreviation: "RO",
+        },
+        {
+          name: "Roraima",
+          abbreviation: "RR",
+        },
+        {
+          name: "Santa Catarina",
+          abbreviation: "SC",
+        },
+        {
+          name: "São Paulo",
+          abbreviation: "SP",
+        },
+        {
+          name: "Sergipe",
+          abbreviation: "SE",
+        },
+        {
+          name: "Tocantins",
+          abbreviation: "TO",
+        },
       ],
-      cityFilter: "",
-      cities: [],
+      cityChosen: null,
       covidData: [
         {
           title: "Óbitos confirmados",
@@ -189,6 +270,70 @@ export default defineComponent({
 
   computed: {
     ...mapState(useDiseaseStore, ["diseases"]),
+
+    filteredCities(): City[] {
+      let cities: City[] = [];
+
+      if (this.diseaseChosen) {
+        cities = this.diseaseChosen.cities;
+      } else {
+        this.diseases.forEach((disease) => {
+          disease.cities.forEach((city) => {
+            if (!cities.find(({ id }) => city.id === id)) {
+              cities.push(city);
+            }
+          });
+        });
+      }
+
+      cities = cities.filter((city) =>
+        this.filteredStates.find((state) => state.abbreviation === city.state)
+      );
+
+      return cities;
+    },
+
+    filteredStates(): State[] {
+      const states: State[] = [];
+
+      if (this.diseaseChosen) {
+        this.diseaseChosen.cities.forEach((city) => {
+          const state = this.states.find(
+            ({ abbreviation }) => city.state === abbreviation
+          );
+
+          if (state) {
+            states.push(state);
+          }
+        });
+      } else {
+        this.diseases.forEach((disease) => {
+          disease.cities.forEach((city) => {
+            const state = this.states.find(
+              ({ abbreviation }) => city.state === abbreviation
+            );
+
+            if (state) {
+              states.push(state);
+            }
+          });
+        });
+      }
+
+      return states;
+    },
+
+    totalCases() {
+      let result = 0;
+
+      this.filteredCities.forEach((city) => {
+        city.cases.forEach(({ total }) => {
+          result += total;
+        });
+      });
+
+      return result;
+    },
   },
 
   async mounted() {
