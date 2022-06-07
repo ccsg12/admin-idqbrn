@@ -212,7 +212,7 @@ export default defineComponent({
     },
     stateName() {
       if (this.sumCases == 0){
-        console.log("ola")
+        console.log("OPA")
       }
       if (this.diseaseID == -1){
         return [];
@@ -224,19 +224,20 @@ export default defineComponent({
         return states
       }
     },
-    cityList() {
-      var cities:any[] = []
-      var casos = this.caseList?.filter(elem => elem.city.state == this.stateFilter)
-      casos?.forEach(elem => cities.push(elem.city))
-      return cities
+    caseListPerState(){
+      return this.caseList?.filter(elem => elem.city.state == this.stateFilter)
     },
     cityName() {
       var cities:string[] = []
-      this.cityList?.forEach(elem => cities.push(elem.name))
+      this.caseListPerState?.forEach(elem => cities.push(elem.city.name))
       return cities
+    },
+    caseListPerCity() {
+      return this.caseListPerState?.filter(elem => elem.city.name == this.cityFilter)
     },
     sumCases() {
       var ret:number = 0
+      console.log(ret)
       if (this.diseaseID == -1){
         return 0
       }
@@ -244,13 +245,11 @@ export default defineComponent({
         this.caseList?.forEach(elem => ret += elem.total)
       }
       else if (this.cityFilter == ""){
-        var casos = this.caseList?.filter(elem => elem.city.state == this.stateFilter)
-        casos?.forEach(elem => ret += elem.total)
+        this.caseListPerState?.forEach(elem => ret += elem.total)
       }
       else {
-
+        this.caseListPerCity?.forEach(elem => ret += elem.total)
       }
-      
       console.log(ret)
       return ret
     }
