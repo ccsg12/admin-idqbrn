@@ -67,14 +67,7 @@
         </v-btn>
       </div>
     </div>
-    <v-text-field
-                v-model="message"
-                bg-color="#fff"
-                density="compact"
-                label="Quantidade"
-                type="number"
-                variant="outlined"
-              />
+
     <v-alert v-if="message" color="blue-grey" dark>
       {{ message }}
     </v-alert>
@@ -86,9 +79,11 @@ import { defineComponent } from "vue";
 import { mapActions } from "pinia";
 
 import { useNavBarStore } from "@/stores";
-import UploadService from "@/services/UploadFilesService";
+import { UploadFilesService } from "@/services";
 
 import "./styles.scss";
+
+const uploadFilesService = new UploadFilesService();
 
 export default defineComponent({
   name: "AdminView",
@@ -129,44 +124,48 @@ export default defineComponent({
         state: "",
         quantity: 0,
         city: "",
-        text:"",
+        text: "",
       },
       currentFile: undefined,
       progress: 0,
       message: "",
-      fileInfos: []
+      fileInfos: [],
     };
   },
 
-  mounted() {
+  async mounted() {
     this.setShowNavBar(true);
-  
+    // await this.loadUserDetails();
   },
 
   methods: {
     ...mapActions(useNavBarStore, ["setShowNavBar"]),
-    selectFile(event: { target: { files: undefined[]; }; }) {
+    // ...mapActions(useUserStore, ["loadUserDetails"]),
+
+    selectFile(event: { target: { files: undefined[] } }) {
       this.progress = 0;
       this.currentFile = event?.target?.files[0];
       console.log("foi");
     },
+
     upload() {
       if (!this.currentFile) {
-        this.message = "Please select a file!";
+        this.message = "Por favor selecione um arquivo.";
         return;
       }
+
       this.message = "";
-      UploadService.upload(this.currentFile, (event: { loaded: number; total: number; }) => {
-        this.progress = Math.round((100 * event.loaded) / event.total);
-      })
+
+      uploadFilesService
+        .upload(this.currentFile, (event) => {
+          this.progress = Math.round((100 * event.loaded) / event.total);
+        })
         .then((response) => {
           this.message = response.data.message;
-          return;
         })
-        
         .catch(() => {
           this.progress = 0;
-          this.message = "Could not upload the file!";
+          this.message = "Não foi possível fazer o upload do arquivo.";
           this.currentFile = undefined;
         });
     },

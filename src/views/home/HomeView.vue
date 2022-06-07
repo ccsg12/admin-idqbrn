@@ -17,8 +17,6 @@
                 :lat-lng="circle.center"
                 :radius="circle.radius"
               />
-
-              <l-geo-json :geojson="geoJson" />
             </l-map>
           </div>
         </div>
@@ -72,7 +70,6 @@ import { defineComponent } from "vue";
 import {
   LCircleMarker,
   LControlLayers,
-  LGeoJson,
   LMap,
   LTileLayer,
 } from "@vue-leaflet/vue-leaflet";
@@ -94,7 +91,6 @@ export default defineComponent({
     LMap,
     LTileLayer,
     LCircleMarker,
-    LGeoJson,
     LControlLayers,
     InfoCard,
     Multiselect,
@@ -338,11 +334,6 @@ export default defineComponent({
 
   async mounted() {
     this.setShowNavBar(false);
-
-    const response = await fetch(
-      "https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-33-mun.json"
-    );
-    this.geoJson = await response.json();
   },
 
   methods: {

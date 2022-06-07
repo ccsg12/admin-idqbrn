@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import type { DiseasesState } from "@/stores";
 
-import { DiseasesApi } from "@/services";
+import { DiseasesService } from "@/services";
 
 export const useDiseaseStore = defineStore("disease", {
   state: (): DiseasesState => ({
@@ -12,7 +12,7 @@ export const useDiseaseStore = defineStore("disease", {
     async loadDiseases() {
       try {
         if (this.diseases.length === 0) {
-          this.diseases = await DiseasesApi.loadDiseases();
+          this.diseases = await DiseasesService.loadDiseases();
         }
       } catch (e) {
         console.log(e);

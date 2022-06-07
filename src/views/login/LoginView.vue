@@ -48,9 +48,7 @@
 import { defineComponent } from "vue";
 import { mapStores } from "pinia";
 
-import type { User } from "@/stores";
 import { useNavBarStore, useUserStore } from "@/stores";
-import { UsersApi } from "@/services";
 
 import "./styles.scss";
 
@@ -75,18 +73,13 @@ export default defineComponent({
 
   methods: {
     async login() {
-      const user: User = {
-        id: 1,
-        name: "Caio Cesar",
-      };
-      this.userStore.setUser(user);
-
-      const req = {
+      const payload = {
         email: this.email,
         password: this.password,
       };
-      const res = await UsersApi.loginUser(req);
-      this.$router.push({ name: "admin" });
+
+      await this.userStore.login(payload);
+      await this.$router.push({ name: "admin" });
     },
   },
 });

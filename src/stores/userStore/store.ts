@@ -1,4 +1,8 @@
 import { defineStore } from "pinia";
+
+import type { UserCredentials } from "@/services";
+import { UsersService } from "@/services";
+
 import type { User, UserState } from "@/stores";
 
 export const useUserStore = defineStore("user", {
@@ -9,7 +13,7 @@ export const useUserStore = defineStore("user", {
 
   getters: {
     isAuthenticated(): boolean {
-      return this.user !== null;
+      return this.token !== "";
     },
   },
 
@@ -30,6 +34,23 @@ export const useUserStore = defineStore("user", {
 
       this.token = token ?? "";
       this.user = userStored ? JSON.parse(userStored) : null;
+    },
+
+    async login(payload: UserCredentials) {
+      const response = await UsersService.loginUser(payload);
+
+      this.setToken(response.token);
+    },
+
+    async loadUserDetails() {
+      const response = await UsersService.details();
+
+      this.setUser({
+        email: response.email,
+        id: response.id,
+        name: response.nome,
+        role: response.funcaoId,
+      });
     },
 
     resetUserState() {
