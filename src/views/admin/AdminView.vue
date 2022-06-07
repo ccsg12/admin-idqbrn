@@ -16,17 +16,20 @@
                 variant="outlined"
               />
 
-              <v-select
+              <multiselect
                 v-model="newCase.state"
-                :items="states"
-                bg-color="#fff"
-                density="compact"
-                label="Estado"
-                variant="outlined"
+                :options="states"
+                class="mb-4"
+                label="name"
+                object
+                placeholder="Estado"
+                value-prop="abbreviation"
               />
             </v-col>
 
             <v-col cols="12" md="6">
+              v-
+
               <v-select
                 v-model="newCase.city"
                 bg-color="#fff"
@@ -76,9 +79,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
+import Multiselect from "@vueform/multiselect";
 
-import { useNavBarStore } from "@/stores";
+import { useCitiesStore, useDiseaseStore, useNavBarStore } from "@/stores";
 import { UploadFilesService } from "@/services";
 
 import "./styles.scss";
@@ -87,37 +91,114 @@ const uploadFilesService = new UploadFilesService();
 
 export default defineComponent({
   name: "AdminView",
+
+  components: {
+    Multiselect,
+  },
+
   data() {
     return {
-      diseases: ["Covid19", "Gripe", "Dengue"],
       states: [
-        "Acre",
-        "Alagoas",
-        "Amapá",
-        "Amazonas",
-        "Bahia",
-        "Ceará",
-        "Distrito Federal",
-        "Espírito Santo",
-        "Goiás",
-        "Maranhão",
-        "Mato Grosso",
-        "Mato Grosso do Sul",
-        "Minas Gerais",
-        "Pará",
-        "Paraíba",
-        "Paraná",
-        "Pernambuco",
-        "Piauí",
-        "Rio de Janeiro",
-        "Rio Grande do Norte",
-        "Rio Grande do Sul",
-        "Rondônia",
-        "Roraima",
-        "Santa Catarina",
-        "São Paulo",
-        "Sergipe",
-        "Tocantins",
+        {
+          name: "Acre",
+          abbreviation: "AC",
+        },
+        {
+          name: "Alagoas",
+          abbreviation: "AL",
+        },
+        {
+          name: "Bahia",
+          abbreviation: "BA",
+        },
+        {
+          name: "Ceará",
+          abbreviation: "CE",
+        },
+        {
+          name: "Distrito Federal",
+          abbreviation: "DF",
+        },
+        {
+          name: "Espírito Santo",
+          abbreviation: "ES",
+        },
+        {
+          name: "Goiás",
+          abbreviation: "GO",
+        },
+        {
+          name: "Maranhão",
+          abbreviation: "MA",
+        },
+        {
+          name: "Mato Grosso",
+          abbreviation: "MT",
+        },
+        {
+          name: "Mato Grosso do Sul",
+          abbreviation: "MS",
+        },
+        {
+          name: "Minas Gerais",
+          abbreviation: "MG",
+        },
+        {
+          name: "Pará",
+          abbreviation: "PA",
+        },
+        {
+          name: "Paraíba",
+          abbreviation: "PB",
+        },
+        {
+          name: "Paraná",
+          abbreviation: "PR",
+        },
+        {
+          name: "Pernambuco",
+          abbreviation: "PE",
+        },
+        {
+          name: "Piauí",
+          abbreviation: "PI",
+        },
+        {
+          name: "Rio de Janeiro",
+          abbreviation: "RJ",
+        },
+        {
+          name: "Rio Grande do Norte",
+          abbreviation: "RN",
+        },
+        {
+          name: "Rio Grande do Sul",
+          abbreviation: "RS",
+        },
+        {
+          name: "Rondônia",
+          abbreviation: "RO",
+        },
+        {
+          name: "Roraima",
+          abbreviation: "RR",
+        },
+        {
+          name: "Santa Catarina",
+          abbreviation: "SC",
+        },
+        {
+          name: "São Paulo",
+          abbreviation: "SP",
+        },
+        {
+          name: "Sergipe",
+          abbreviation: "SE",
+        },
+        {
+          name: "Tocantins",
+          abbreviation: "TO",
+        },
       ],
       newCase: {
         disease: "",
@@ -136,10 +217,17 @@ export default defineComponent({
   async mounted() {
     this.setShowNavBar(true);
     // await this.loadUserDetails();
+    await this.loadCities();
+  },
+
+  computed: {
+    ...mapState(useCitiesStore, ["cities"]),
+    ...mapState(useDiseaseStore, ["diseases"]),
   },
 
   methods: {
     ...mapActions(useNavBarStore, ["setShowNavBar"]),
+    ...mapActions(useCitiesStore, ["loadCities"]),
     // ...mapActions(useUserStore, ["loadUserDetails"]),
 
     selectFile(event: { target: { files: undefined[] } }) {

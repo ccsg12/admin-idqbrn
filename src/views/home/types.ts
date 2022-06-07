@@ -1,4 +1,4 @@
-import type { Case, City, Disease } from "@/stores";
+import type { Case, CityWithCases, Disease } from "@/stores";
 
 export type State = {
   abbreviation: string;
@@ -16,7 +16,7 @@ export type CasesDetails = Case & {
   disease: string | undefined;
 };
 
-export type CityDetails = City & {
+export type CityDetails = CityWithCases & {
   casesDetails: CasesDetails[];
 };
 
