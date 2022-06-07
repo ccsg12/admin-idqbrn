@@ -25,34 +25,35 @@
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-form>
-          <v-select
-            v-model="diseaseFilter"
-            :items="diseases"
-            bg-color="#fff"
-            density="compact"
-            label="Doença"
-            variant="outlined"
-          />
+        <multiselect
+          v-model="diseaseChosen"
+          :options="diseases"
+          class="mb-4"
+          label="name"
+          object
+          placeholder="Doenças"
+          value-prop="id"
+        />
 
-          <v-select
-            v-model="stateFilter"
-            :items="states"
-            bg-color="#fff"
-            density="compact"
-            label="Estado"
-            variant="outlined"
-          />
+        <multiselect
+          v-model="stateChosen"
+          :options="filteredStates"
+          class="my-4"
+          label="name"
+          object
+          placeholder="Estado"
+          value-prop="abbreviation"
+        />
 
-          <v-select
-            v-model="cityFilter"
-            :items="cities"
-            bg-color="#fff"
-            density="compact"
-            label="Cidade"
-            variant="outlined"
-          />
-        </v-form>
+        <multiselect
+          v-model="cityChosen"
+          :options="filteredCities"
+          class="mt-4"
+          label="name"
+          object
+          placeholder="Cidade"
+          value-prop="id"
+        />
 
         <info-card
           v-for="item in covidData"
@@ -76,11 +77,12 @@ import {
   LTileLayer,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
-import { mapActions } from "pinia";
+import Multiselect from "@vueform/multiselect";
+import { mapActions, mapState } from "pinia";
 
-import axios from "axios";
-
-import { useNavBarStore } from "@/stores";
+import type { City, Disease } from "@/stores";
+import { useDiseaseStore, useNavBarStore } from "@/stores";
+import type { State } from "./types";
 
 import { InfoCard } from "@/components";
 import "./styles.scss";
@@ -95,6 +97,7 @@ export default defineComponent({
     LGeoJson,
     LControlLayers,
     InfoCard,
+    Multiselect,
   },
 
   data() {
@@ -108,41 +111,111 @@ export default defineComponent({
         color: "red",
       },
       geoJson: null,
-      diseaseFilter: "Covid19",
-      diseases: ["Covid19", "Gripe", "Dengue"],
-      stateFilter: "",
+      diseaseChosen: null as Disease | null,
+      stateChosen: null,
       states: [
-        "Acre",
-        "Alagoas",
-        "Amapá",
-        "Amazonas",
-        "Bahia",
-        "Ceará",
-        "Distrito Federal",
-        "Espírito Santo",
-        "Goiás",
-        "Maranhão",
-        "Mato Grosso",
-        "Mato Grosso do Sul",
-        "Minas Gerais",
-        "Pará",
-        "Paraíba",
-        "Paraná",
-        "Pernambuco",
-        "Piauí",
-        "Rio de Janeiro",
-        "Rio Grande do Norte",
-        "Rio Grande do Sul",
-        "Rondônia",
-        "Roraima",
-        "Santa Catarina",
-        "São Paulo",
-        "Sergipe",
-        "Tocantins",
+        {
+          name: "Acre",
+          abbreviation: "AC",
+        },
+        {
+          name: "Alagoas",
+          abbreviation: "AL",
+        },
+        {
+          name: "Bahia",
+          abbreviation: "BA",
+        },
+        {
+          name: "Ceará",
+          abbreviation: "CE",
+        },
+        {
+          name: "Distrito Federal",
+          abbreviation: "DF",
+        },
+        {
+          name: "Espírito Santo",
+          abbreviation: "ES",
+        },
+        {
+          name: "Goiás",
+          abbreviation: "GO",
+        },
+        {
+          name: "Maranhão",
+          abbreviation: "MA",
+        },
+        {
+          name: "Mato Grosso",
+          abbreviation: "MT",
+        },
+        {
+          name: "Mato Grosso do Sul",
+          abbreviation: "MS",
+        },
+        {
+          name: "Minas Gerais",
+          abbreviation: "MG",
+        },
+        {
+          name: "Pará",
+          abbreviation: "PA",
+        },
+        {
+          name: "Paraíba",
+          abbreviation: "PB",
+        },
+        {
+          name: "Paraná",
+          abbreviation: "PR",
+        },
+        {
+          name: "Pernambuco",
+          abbreviation: "PE",
+        },
+        {
+          name: "Piauí",
+          abbreviation: "PI",
+        },
+        {
+          name: "Rio de Janeiro",
+          abbreviation: "RJ",
+        },
+        {
+          name: "Rio Grande do Norte",
+          abbreviation: "RN",
+        },
+        {
+          name: "Rio Grande do Sul",
+          abbreviation: "RS",
+        },
+        {
+          name: "Rondônia",
+          abbreviation: "RO",
+        },
+        {
+          name: "Roraima",
+          abbreviation: "RR",
+        },
+        {
+          name: "Santa Catarina",
+          abbreviation: "SC",
+        },
+        {
+          name: "São Paulo",
+          abbreviation: "SP",
+        },
+        {
+          name: "Sergipe",
+          abbreviation: "SE",
+        },
+        {
+          name: "Tocantins",
+          abbreviation: "TO",
+        },
       ],
-      cityFilter: "",
-      cities:[],
-      teste: null,
+      cityChosen: null,
       covidData: [
         {
           title: "Óbitos confirmados",
@@ -195,24 +268,81 @@ export default defineComponent({
     };
   },
 
+  computed: {
+    ...mapState(useDiseaseStore, ["diseases"]),
+
+    filteredCities(): City[] {
+      let cities: City[] = [];
+
+      if (this.diseaseChosen) {
+        cities = this.diseaseChosen.cities;
+      } else {
+        this.diseases.forEach((disease) => {
+          disease.cities.forEach((city) => {
+            if (!cities.find(({ id }) => city.id === id)) {
+              cities.push(city);
+            }
+          });
+        });
+      }
+
+      cities = cities.filter((city) =>
+        this.filteredStates.find((state) => state.abbreviation === city.state)
+      );
+
+      return cities;
+    },
+
+    filteredStates(): State[] {
+      const states: State[] = [];
+
+      if (this.diseaseChosen) {
+        this.diseaseChosen.cities.forEach((city) => {
+          const state = this.states.find(
+            ({ abbreviation }) => city.state === abbreviation
+          );
+
+          if (state) {
+            states.push(state);
+          }
+        });
+      } else {
+        this.diseases.forEach((disease) => {
+          disease.cities.forEach((city) => {
+            const state = this.states.find(
+              ({ abbreviation }) => city.state === abbreviation
+            );
+
+            if (state) {
+              states.push(state);
+            }
+          });
+        });
+      }
+
+      return states;
+    },
+
+    totalCases() {
+      let result = 0;
+
+      this.filteredCities.forEach((city) => {
+        city.cases.forEach(({ total }) => {
+          result += total;
+        });
+      });
+
+      return result;
+    },
+  },
+
   async mounted() {
     this.setShowNavBar(false);
-console.log("sas");
+
     const response = await fetch(
       "https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-33-mun.json"
     );
     this.geoJson = await response.json();
-    axios
-      .get('http://172.21.96.1:3002/api/diseases')
-      .then(response => 
-      { 
-        this.cities = response.data.map(x => x.nome);
-        console.log(this.cities);
-      }
-      )
-  
-    
-
   },
 
   methods: {
@@ -220,3 +350,5 @@ console.log("sas");
   },
 });
 </script>
+
+<style src="@vueform/multiselect/themes/default.css"></style>
