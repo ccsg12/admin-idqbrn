@@ -1,5 +1,5 @@
 export type City = {
-  cases: Case[];
+  cases: Case;
   id: number;
   latitude: number;
   longitude: number;

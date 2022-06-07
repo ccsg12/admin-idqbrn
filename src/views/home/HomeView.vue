@@ -8,15 +8,31 @@
           </div>
 
           <div class="map-container">
-            <l-map v-model="zoom" v-model:zoom="zoom" :center="center">
+            <l-map
+              v-model="zoom"
+              v-model:zoom="zoom"
+              :center="center"
+              :min-zoom="4"
+            >
               <l-tile-layer :url="url" />
               <l-control-layers />
 
-              <l-circle-marker
-                :color="circle.color"
-                :lat-lng="circle.center"
-                :radius="circle.radius"
-              />
+              <template v-for="city in filteredCities" :key="city.id">
+                <l-circle-marker
+                  :color="mapCircleStyle.color"
+                  :fill="true"
+                  :fill-color="mapCircleStyle.fillColor"
+                  :fill-opacity="mapCircleStyle.fillOpacity"
+                  :lat-lng="cityCoordinates(city.latitude, city.longitude)"
+                  :radius="mapCircleStyle.radius"
+                >
+                  <l-tooltip>
+                    <div v-for="disease in city.casesDetails" :key="disease.id">
+                      {{ disease.disease }}: {{ disease.total }}
+                    </div>
+                  </l-tooltip>
+                </l-circle-marker>
+              </template>
             </l-map>
           </div>
         </div>
@@ -31,6 +47,7 @@
           object
           placeholder="Doenças"
           value-prop="id"
+          @select="updateCitiesValues"
         />
 
         <multiselect
@@ -67,19 +84,25 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { latLng } from "leaflet";
 import {
   LCircleMarker,
   LControlLayers,
   LMap,
   LTileLayer,
+  LTooltip,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 import Multiselect from "@vueform/multiselect";
 import { mapActions, mapState } from "pinia";
 
-import type { City, Disease } from "@/stores";
 import { useDiseaseStore, useNavBarStore } from "@/stores";
-import type { State } from "./types";
+import type {
+  CityDetails,
+  DiseaseDetails,
+  MapCircleStyle,
+  State,
+} from "./types";
 
 import { InfoCard } from "@/components";
 import "./styles.scss";
@@ -90,6 +113,7 @@ export default defineComponent({
   components: {
     LMap,
     LTileLayer,
+    LTooltip,
     LCircleMarker,
     LControlLayers,
     InfoCard,
@@ -100,14 +124,9 @@ export default defineComponent({
     return {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       zoom: 4,
-      center: [-15.474279, -58.084098],
-      circle: {
-        center: [-15.474279, -58.084098],
-        radius: 6,
-        color: "red",
-      },
+      center: latLng(-15.474279, -58.084098),
       geoJson: null,
-      diseaseChosen: null as Disease | null,
+      diseaseChosen: null as DiseaseDetails | null,
       stateChosen: null,
       states: [
         {
@@ -211,7 +230,7 @@ export default defineComponent({
           abbreviation: "TO",
         },
       ],
-      cityChosen: null,
+      cityChosen: null as CityDetails | null,
       covidData: [
         {
           title: "Óbitos confirmados",
@@ -267,16 +286,31 @@ export default defineComponent({
   computed: {
     ...mapState(useDiseaseStore, ["diseases"]),
 
-    filteredCities(): City[] {
-      let cities: City[] = [];
+    filteredCities(): CityDetails[] {
+      let cities: CityDetails[] = [];
 
       if (this.diseaseChosen) {
         cities = this.diseaseChosen.cities;
       } else {
         this.diseases.forEach((disease) => {
           disease.cities.forEach((city) => {
-            if (!cities.find(({ id }) => city.id === id)) {
-              cities.push(city);
+            const filteredCity = cities.find(({ id }) => city.id === id);
+
+            if (!filteredCity) {
+              cities.push({
+                ...city,
+                casesDetails: [
+                  {
+                    ...city.cases,
+                    disease: disease.name,
+                  },
+                ],
+              });
+            } else {
+              filteredCity.casesDetails.push({
+                ...city.cases,
+                disease: disease.name,
+              });
             }
           });
         });
@@ -319,13 +353,20 @@ export default defineComponent({
       return states;
     },
 
+    mapCircleStyle(): MapCircleStyle {
+      return {
+        color: "red",
+        fillColor: "#f03",
+        fillOpacity: 0.5,
+        radius: 2 * this.zoom,
+      };
+    },
+
     totalCases() {
       let result = 0;
 
       this.filteredCities.forEach((city) => {
-        city.cases.forEach(({ total }) => {
-          result += total;
-        });
+        result += this.cityCases(city);
       });
 
       return result;
@@ -336,8 +377,54 @@ export default defineComponent({
     this.setShowNavBar(false);
   },
 
+  watch: {
+    cityChosen() {
+      this.updateMapOptions();
+    },
+  },
+
   methods: {
     ...mapActions(useNavBarStore, ["setShowNavBar"]),
+
+    cityCases(city: CityDetails): number {
+      let result = 0;
+
+      city.casesDetails.forEach(({ total }) => {
+        result += total;
+      });
+
+      return result;
+    },
+
+    cityCoordinates(latitude: number, longitude: number) {
+      return latLng(latitude, longitude);
+    },
+
+    updateCitiesValues() {
+      if (this.diseaseChosen) {
+        this.diseaseChosen.cities.forEach((city) => {
+          city.casesDetails = [
+            {
+              ...city.cases,
+              disease: this.diseaseChosen?.name,
+            },
+          ];
+        });
+      }
+    },
+
+    updateMapOptions() {
+      if (this.cityChosen) {
+        this.zoom = 9;
+        this.center = latLng(
+          this.cityChosen?.latitude,
+          this.cityChosen?.longitude
+        );
+      } else {
+        this.zoom = 4;
+        this.center = latLng(-15.474279, -58.084098);
+      }
+    },
   },
 });
 </script>

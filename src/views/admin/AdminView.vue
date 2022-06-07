@@ -145,7 +145,6 @@ export default defineComponent({
     selectFile(event: { target: { files: undefined[] } }) {
       this.progress = 0;
       this.currentFile = event?.target?.files[0];
-      console.log("foi");
     },
 
     upload() {
