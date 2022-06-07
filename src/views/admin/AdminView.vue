@@ -57,15 +57,27 @@
           bg-color="#fff"
           density="compact"
           variant="outlined"
+          @change="selectFile($event)"
         ></v-file-input>
       </div>
 
       <div class="d-flex justify-center">
-        <v-btn class="app-button confirm-button" color="primary"
+        <v-btn class="app-button confirm-button" color="primary" @click="upload"
           >Confirmar Adição
         </v-btn>
       </div>
     </div>
+    <v-text-field
+                v-model="message"
+                bg-color="#fff"
+                density="compact"
+                label="Quantidade"
+                type="number"
+                variant="outlined"
+              />
+    <v-alert v-if="message" color="blue-grey" dark>
+      {{ message }}
+    </v-alert>
   </v-container>
 </template>
 
@@ -74,6 +86,7 @@ import { defineComponent } from "vue";
 import { mapActions } from "pinia";
 
 import { useNavBarStore } from "@/stores";
+import UploadService from "@/services/UploadFilesService";
 
 import "./styles.scss";
 
@@ -116,16 +129,47 @@ export default defineComponent({
         state: "",
         quantity: 0,
         city: "",
+        text:"",
       },
+      currentFile: undefined,
+      progress: 0,
+      message: "",
+      fileInfos: []
     };
   },
 
   mounted() {
     this.setShowNavBar(true);
+  
   },
 
   methods: {
     ...mapActions(useNavBarStore, ["setShowNavBar"]),
+    selectFile(event: { target: { files: undefined[]; }; }) {
+      this.progress = 0;
+      this.currentFile = event?.target?.files[0];
+      console.log("foi");
+    },
+    upload() {
+      if (!this.currentFile) {
+        this.message = "Please select a file!";
+        return;
+      }
+      this.message = "";
+      UploadService.upload(this.currentFile, (event: { loaded: number; total: number; }) => {
+        this.progress = Math.round((100 * event.loaded) / event.total);
+      })
+        .then((response) => {
+          this.message = response.data.message;
+          return;
+        })
+        
+        .catch(() => {
+          this.progress = 0;
+          this.message = "Could not upload the file!";
+          this.currentFile = undefined;
+        });
+    },
   },
 });
 </script>
