@@ -3,6 +3,11 @@ export type UserCredentials = {
   password: string;
 };
 
+export type RegisterUser = UserCredentials & {
+  name: string;
+  role: number | undefined;
+};
+
 export type UserDetails = {
   email: string;
   funcaoId: number;

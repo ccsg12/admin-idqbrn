@@ -1,6 +1,6 @@
 @import "@/styles";
 
-.login-form-container {
+.register-form-container {
   background: #fff;
   border-radius: 8px;
   border: 1px solid $light-gray;
@@ -21,6 +21,10 @@
     .header-subtitle {
       font-size: 0.9rem;
     }
+  }
+
+  .form-input {
+    margin: 2rem 0
   }
 
   .v-icon {

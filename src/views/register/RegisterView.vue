@@ -2,7 +2,7 @@
   <v-container class="full-page d-flex">
     <v-row justify="center">
       <v-col class="d-flex flex-column justify-center" cols="12" md="6" xl="4">
-        <div class="login-form-container">
+        <div class="register-form-container">
           <div class="form-header">
             <h2 class="header-title">Cadastro de novo usuário</h2>
             <span class="header-subtitle">Insira os dados do novo usuário</span>
@@ -17,11 +17,12 @@
               variant="outlined"
             />
 
-            <v-text-field
-              v-model="funcao"
+            <v-select
+              v-model="roleChosen"
+              :items="rolesNames"
               density="compact"
-              label="Função ID"
-              placeholder=""
+              label="Função"
+              no-data-text="Nenhuma função foi carregada."
               variant="outlined"
             />
 
@@ -51,10 +52,9 @@
             color="primary"
             rounded="lg"
             size="large"
-            @click="login"
+            @click="registerUser"
             >Cadastrar
           </v-btn>
-          
         </div>
       </v-col>
     </v-row>
@@ -65,20 +65,29 @@
 import { defineComponent } from "vue";
 import { mapStores } from "pinia";
 
-
-import type { User } from "@/stores";
 import { useNavBarStore, useUserStore } from "@/stores";
 
 import "./styles.scss";
+import { UsersService } from "@/services";
 
 export default defineComponent({
-  name: "CadastroView",
+  name: "RegisterView",
 
   data() {
     return {
       name: "",
       email: "",
-      funcao:"",
+      roleChosen: "",
+      roles: [
+        {
+          id: 1,
+          role: "Administrador",
+        },
+        {
+          id: 2,
+          role: "Editor",
+        },
+      ],
       password: "",
       passwordVisible: false,
     };
@@ -90,12 +99,29 @@ export default defineComponent({
 
   computed: {
     ...mapStores(useNavBarStore, useUserStore),
+
+    rolesNames(): string[] {
+      return this.roles.map(({ role }) => role);
+    },
+
+    role(): number | undefined {
+      return this.roles.find(({ role }) => role === this.roleChosen)?.id;
+    },
   },
 
   methods: {
-    login() {
-     
+    async registerUser() {
+      const payload = {
+        email: this.email,
+        name: this.name,
+        password: this.password,
+        role: this.role,
+      };
+
+      await UsersService.registerUser(payload);
     },
   },
 });
 </script>
+
+<style src="@vueform/multiselect/themes/default.css"></style>
