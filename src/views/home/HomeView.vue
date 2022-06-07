@@ -28,7 +28,7 @@
         <v-form>
           <v-select
             v-model="diseaseFilter"
-            :items="diseases"
+            :items="diseaseName"
             bg-color="#fff"
             density="compact"
             label="Doença"
@@ -37,7 +37,7 @@
 
           <v-select
             v-model="stateFilter"
-            :items="states"
+            :items="stateName"
             bg-color="#fff"
             density="compact"
             label="Estado"
@@ -46,7 +46,7 @@
 
           <v-select
             v-model="cityFilter"
-            :items="cities"
+            :items="cityName"
             bg-color="#fff"
             density="compact"
             label="Cidade"
@@ -106,8 +106,7 @@ export default defineComponent({
         color: "red",
       },
       geoJson: null,
-      diseaseFilter: "Covid19",
-      diseases: ["Covid19", "Gripe", "Dengue"],
+      diseaseFilter: "",
       stateFilter: "",
       states: [
         "Acre",
@@ -139,7 +138,6 @@ export default defineComponent({
         "Tocantins",
       ],
       cityFilter: "",
-      cities: [],
       teste: null,
       covidData: [
         {
@@ -195,6 +193,67 @@ export default defineComponent({
 
   computed: {
     ...mapState(useDiseaseStore, ["diseases"]),
+    diseaseName() {
+      var names:string[] = []
+      this.diseases.forEach(Elem => names.push(Elem.name))
+      return names
+    },
+    diseaseID() {
+      var dis = this.diseases.find(elem => elem.name == this.diseaseFilter)
+      if (dis == null){
+        return -1
+      }
+      else {
+        return dis.id
+      }
+    },
+    caseList() {
+      return this.diseases.find(elem => elem.id == this.diseaseID)?.cases
+    },
+    stateName() {
+      if (this.sumCases == 0){
+        console.log("ola")
+      }
+      if (this.diseaseID == -1){
+        return [];
+      }
+      else {
+        var states:string[] = []
+        this.caseList?.forEach(elem => states.push(elem.city.state))
+        states = [...new Set(states)]
+        return states
+      }
+    },
+    cityList() {
+      var cities:any[] = []
+      var casos = this.caseList?.filter(elem => elem.city.state == this.stateFilter)
+      casos?.forEach(elem => cities.push(elem.city))
+      return cities
+    },
+    cityName() {
+      var cities:string[] = []
+      this.cityList?.forEach(elem => cities.push(elem.name))
+      return cities
+    },
+    sumCases() {
+      var ret:number = 0
+      if (this.diseaseID == -1){
+        return 0
+      }
+      else if (this.stateFilter == ""){
+        this.caseList?.forEach(elem => ret += elem.total)
+      }
+      else if (this.cityFilter == ""){
+        var casos = this.caseList?.filter(elem => elem.city.state == this.stateFilter)
+        casos?.forEach(elem => ret += elem.total)
+      }
+      else {
+
+      }
+      
+      console.log(ret)
+      return ret
+    }
   },
 
   async mounted() {
