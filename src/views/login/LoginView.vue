@@ -50,6 +50,7 @@ import { mapStores } from "pinia";
 
 import type { User } from "@/stores";
 import { useNavBarStore, useUserStore } from "@/stores";
+import { UsersApi } from "@/services";
 
 import "./styles.scss";
 
@@ -73,14 +74,18 @@ export default defineComponent({
   },
 
   methods: {
-    login() {
+    async login() {
       const user: User = {
         id: 1,
         name: "Caio Cesar",
       };
-
       this.userStore.setUser(user);
 
+      const req = {
+        email: this.email,
+        password: this.password,
+      };
+      const res = await UsersApi.loginUser(req);
       this.$router.push({ name: "admin" });
     },
   },
