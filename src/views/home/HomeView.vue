@@ -25,34 +25,28 @@
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-form>
-          <v-select
-            v-model="diseaseFilter"
-            :items="diseases"
-            bg-color="#fff"
-            density="compact"
-            label="Doença"
-            variant="outlined"
-          />
+        <multiselect
+          v-model="diseaseFilter"
+          :options="diseases"
+          class="mb-4"
+          label="name"
+          placeholder="Doenças"
+          value-prop="id"
+        />
 
-          <v-select
-            v-model="stateFilter"
-            :items="states"
-            bg-color="#fff"
-            density="compact"
-            label="Estado"
-            variant="outlined"
-          />
+        <multiselect
+          v-model="stateFilter"
+          :options="states"
+          class="my-4"
+          placeholder="Estado"
+        />
 
-          <v-select
-            v-model="cityFilter"
-            :items="cities"
-            bg-color="#fff"
-            density="compact"
-            label="Cidade"
-            variant="outlined"
-          />
-        </v-form>
+        <multiselect
+          v-model="cityFilter"
+          :options="cities"
+          class="mt-4"
+          placeholder="Cidade"
+        />
 
         <info-card
           v-for="item in covidData"
@@ -76,6 +70,7 @@ import {
   LTileLayer,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
+import Multiselect from "@vueform/multiselect";
 import { mapActions, mapState } from "pinia";
 
 import { useDiseaseStore, useNavBarStore } from "@/stores";
@@ -93,6 +88,7 @@ export default defineComponent({
     LGeoJson,
     LControlLayers,
     InfoCard,
+    Multiselect,
   },
 
   data() {
@@ -106,8 +102,7 @@ export default defineComponent({
         color: "red",
       },
       geoJson: null,
-      diseaseFilter: "Covid19",
-      diseases: ["Covid19", "Gripe", "Dengue"],
+      diseaseFilter: null,
       stateFilter: "",
       states: [
         "Acre",
@@ -140,7 +135,6 @@ export default defineComponent({
       ],
       cityFilter: "",
       cities: [],
-      teste: null,
       covidData: [
         {
           title: "Óbitos confirmados",
@@ -211,3 +205,5 @@ export default defineComponent({
   },
 });
 </script>
+
+<style src="@vueform/multiselect/themes/default.css"></style>

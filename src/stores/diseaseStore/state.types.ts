@@ -1,4 +1,5 @@
 export type City = {
+  cases: Case[];
   id: number;
   latitude: number;
   longitude: number;
@@ -6,14 +7,13 @@ export type City = {
   state: string;
 };
 
-export type DiseaseCase = {
-  city: City;
+export type Case = {
   id: number;
   total: number;
 };
 
 export type Disease = {
-  cases: DiseaseCase[];
+  cities: City[];
   id: number;
   name: string;
   totalCases: number;

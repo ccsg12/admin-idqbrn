@@ -22,13 +22,14 @@
 import { defineComponent } from "vue";
 import { mapActions, mapState } from "pinia";
 
-import { useNavBarStore, useUserStore } from "@/stores";
+import { useDiseaseStore, useNavBarStore, useUserStore } from "@/stores";
 
 export default defineComponent({
   name: "App",
 
-  mounted() {
+  async mounted() {
     this.loadUserState();
+    await this.loadDiseases();
   },
 
   computed: {
@@ -37,6 +38,7 @@ export default defineComponent({
 
   methods: {
     ...mapActions(useUserStore, ["loadUserState", "resetUserState"]),
+    ...mapActions(useDiseaseStore, ["loadDiseases"]),
 
     logout() {
       this.resetUserState();
