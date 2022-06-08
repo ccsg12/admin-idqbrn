@@ -127,7 +127,7 @@ export default defineComponent({
       center: latLng(-15.474279, -58.084098),
       geoJson: null,
       diseaseChosen: null as DiseaseDetails | null,
-      stateChosen: null,
+      stateChosen: null as State | null,
       states: [
         {
           name: "Acre",
@@ -316,9 +316,15 @@ export default defineComponent({
         });
       }
 
-      cities = cities.filter((city) =>
-        this.filteredStates.find((state) => state.abbreviation === city.state)
-      );
+      if (this.stateChosen) {
+        cities = cities.filter(
+          (city) => city.state === this.stateChosen.abbreviation
+        );
+      }
+
+      if (this.cityChosen) {
+        cities = cities.filter((city) => city.id === this.cityChosen.id);
+      }
 
       return cities;
     },
@@ -332,7 +338,7 @@ export default defineComponent({
             ({ abbreviation }) => city.state === abbreviation
           );
 
-          if (state) {
+          if (state && !states.includes(state)) {
             states.push(state);
           }
         });
@@ -343,7 +349,7 @@ export default defineComponent({
               ({ abbreviation }) => city.state === abbreviation
             );
 
-            if (state) {
+            if (state && !states.includes(state)) {
               states.push(state);
             }
           });
