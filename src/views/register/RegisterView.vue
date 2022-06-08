@@ -110,7 +110,7 @@ export default defineComponent({
   },
 
   methods: {
-    async registerUser() {
+    registerUser() {
       const payload = {
         email: this.email,
         name: this.name,
@@ -118,7 +118,21 @@ export default defineComponent({
         role: this.role,
       };
 
-      await UsersService.registerUser(payload);
+      UsersService.registerUser(payload)
+        .then(() => {
+          this.$swal({
+            icon: "success",
+            title: "Sucesso",
+            text: "Usuário cadastrado com sucesso.",
+          });
+        })
+        .catch(() => {
+          this.$swal({
+            icon: "error",
+            title: "Erro",
+            text: "Ocorreu um erro no cadastro do usuário.",
+          });
+        });
     },
   },
 });

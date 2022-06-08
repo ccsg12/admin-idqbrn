@@ -52,8 +52,11 @@
 
       <div>
         <h2 class="title">Adicionar novos casos via upload</h2>
+        <h3 class="subtitle">(Apenas arquivos CSV)</h3>
 
         <v-file-input
+          :loading="progress"
+          accept=".csv"
           bg-color="#fff"
           density="compact"
           variant="outlined"
@@ -67,10 +70,6 @@
         </v-btn>
       </div>
     </div>
-
-    <v-alert v-if="message" color="blue-grey" dark>
-      {{ message }}
-    </v-alert>
   </v-container>
 </template>
 
@@ -128,7 +127,6 @@ export default defineComponent({
       },
       currentFile: undefined,
       progress: 0,
-      message: "",
       fileInfos: [],
     };
   },
@@ -149,22 +147,34 @@ export default defineComponent({
 
     upload() {
       if (!this.currentFile) {
-        this.message = "Por favor selecione um arquivo.";
+        this.$swal({
+          icon: "error",
+          title: "Erro",
+          text: "Por favor, selecione um arquivo válido.",
+        });
         return;
       }
-
-      this.message = "";
 
       uploadFilesService
         .upload(this.currentFile, (event) => {
           this.progress = Math.round((100 * event.loaded) / event.total);
         })
         .then((response) => {
-          this.message = response.data.message;
+          this.progress = 0;
+
+          this.$swal({
+            icon: "success",
+            title: "Sucesso",
+            text: response.message,
+          });
         })
         .catch(() => {
           this.progress = 0;
-          this.message = "Não foi possível fazer o upload do arquivo.";
+          this.$swal({
+            icon: "error",
+            title: "Erro",
+            text: "Não foi possível fazer o upload do arquivo.",
+          });
           this.currentFile = undefined;
         });
     },
