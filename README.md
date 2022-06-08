@@ -1,46 +1,51 @@
-# admin-idqbrn
 
-This template should help get you started developing with Vue 3 in Vite.
+# ADMIN-IDQBRN
 
-## Recommended IDE Setup
+Front-end do sistema de controle de doenças do IDQBRN 
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
+## 🔨 Funcionalidades do projeto
 
-## Type Support for `.vue` Imports in TS
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+O sistema possui uma pagina para mostrar os casos de doenças no brasil, podendo filtrar por doença, estado ou cidade. Esses casos sao representados em um mapa.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+Além dessa pagina inicial, é possivel, mediante um login, acessar uma pagina para adicionar, alterar ou excluir casos de doenças ou registrar novos usuarios.
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
-## Customize configuration
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## 🔗 Páginas web
 
-## Project Setup
+- `/`: Pagina inicial, visualizacao do mapa
 
-```sh
-npm install
+- `/login`: Pagina para realizar o login
+
+- `/admin`: Pagina autenticada, onde o admin pode manipular o banco de dados
+
+## ✔️ Técnicas e tecnologias utilizadas
+
+
+
+- `Vite+TypeScript`: Ferramentas de desenvolvimento
+- `Vuejs`: Framework para desenvolvimento de interface
+- `Vuetify`: Biblioteca para Design
+- `Pinia`: Biblioteca para Store
+
+## 📁 Acesso ao projeto
+
+Para ter acesso aos arquivos do projeto você pode clonar usando o seguinte comando:
+
+```
+git clone https://github.com/ccsg12/admin-idqbrn.git
 ```
 
-### Compile and Hot-Reload for Development
+## 🛠️ Abrir e rodar o projeto
 
-```sh
-npm run dev
+Agora que já tem a pasta do projeto na sua máquina, dentro dela instale as dependências:
+```
+yarn install
 ```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
+Então podemos rodar um servidor local:
+```
+yarn dev
 ```
 
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
