@@ -2,7 +2,7 @@
   <v-container class="full-page d-flex flex-column justify-center">
     <div>
       <div>
-        <h2 class="title">Adicionar novos casos</h2>
+        <h2 class="title mb-8">Adicionar novos casos</h2>
 
         <v-form>
           <v-row>
@@ -12,6 +12,7 @@
                 :items="diseases"
                 bg-color="#fff"
                 density="compact"
+                disabled
                 label="Doença"
                 variant="outlined"
               />
@@ -21,6 +22,7 @@
                 :items="states"
                 bg-color="#fff"
                 density="compact"
+                disabled
                 label="Estado"
                 variant="outlined"
               />
@@ -31,6 +33,7 @@
                 v-model="newCase.city"
                 bg-color="#fff"
                 density="compact"
+                disabled
                 label="Cidade"
                 variant="outlined"
               />
@@ -39,6 +42,7 @@
                 v-model="newCase.quantity"
                 bg-color="#fff"
                 density="compact"
+                disabled
                 label="Quantidade"
                 type="number"
                 variant="outlined"
@@ -52,7 +56,7 @@
 
       <div>
         <h2 class="title">Adicionar novos casos via upload</h2>
-        <h3 class="subtitle">(Apenas arquivos CSV)</h3>
+        <h3 class="title mb-8">(Apenas arquivos CSV)</h3>
 
         <v-file-input
           :loading="progress"
