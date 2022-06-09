@@ -1,11 +1,14 @@
 <template>
+
+
   <v-container class="full-page">
     <v-row>
       <v-col cols="12" md="8">
         <div class="map-section">
           <div class="map-header">
-            <h2>Casos de COVID-19 por Município</h2>
+            <h2>Mapa de doenças</h2>
           </div>
+          
 
           <div class="map-container">
             <l-map
@@ -70,6 +73,12 @@
           value-prop="id"
         />
 
+        
+  
+  
+  
+
+
         <info-card
           v-for="item in covidData"
           :key="item.title"
@@ -80,6 +89,11 @@
       </v-col>
     </v-row>
   </v-container>
+
+
+
+
+
 </template>
 
 <script lang="ts">
@@ -93,6 +107,7 @@ import {
   LTooltip,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
+
 import Multiselect from "@vueform/multiselect";
 import { mapActions, mapState } from "pinia";
 
@@ -232,51 +247,18 @@ export default defineComponent({
       ],
       cityChosen: null as CityDetails | null,
       covidData: [
+       
         {
-          title: "Óbitos confirmados",
-          color: "#9b59b6",
-          data: [
-            {
-              id: 1,
-              value: 657102,
-              name: "Óbitos confirmados",
-            },
-            {
-              id: 2,
-              value: 304,
-              name: "Casos novos",
-            },
-            {
-              id: 3,
-              value: "2.2%",
-              name: "Letalidade",
-            },
-            {
-              id: 4,
-              value: 312.7,
-              name: "Mortalidade",
-            },
-          ],
-        },
-        {
-          title: "Casos confirmados",
+          
+          title: "Casos Acumulados",
           color: "#16a085",
           data: [
             {
               id: 5,
-              value: 29617266,
-              name: "Acumulado",
+              value: "",
+              name: "",
             },
-            {
-              id: 6,
-              value: 44154,
-              name: "Casos novos",
-            },
-            {
-              id: 7,
-              value: 14093.6,
-              name: "Incidência",
-            },
+           
           ],
         },
       ],
@@ -360,6 +342,7 @@ export default defineComponent({
     },
 
     mapCircleStyle(): MapCircleStyle {
+      console.log(this.totalCases)
       return {
         color: "red",
         fillColor: "#f03",
@@ -371,9 +354,13 @@ export default defineComponent({
     totalCases() {
       let result = 0;
 
+      console.log(this.filtro)
+
       this.filteredCities.forEach((city) => {
         result += this.cityCases(city);
       });
+
+      this.covidData[0].data[0].value = result;
 
       return result;
     },
