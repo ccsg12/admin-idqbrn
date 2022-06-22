@@ -2,7 +2,15 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores";
 
-import { AdminView, HomeView, LoginView, RegisterView } from "@/views";
+import { HomeView, LoginView, UploadView, UsersView } from "@/views";
+
+const checkAuth = () => {
+  const store = useUserStore();
+
+  if (!store.isAuthenticated) {
+    return { name: "login" };
+  }
+};
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,28 +26,16 @@ const router = createRouter({
       component: LoginView,
     },
     {
-      path: "/register",
-      name: "register",
-      component: RegisterView,
-      beforeEnter: () => {
-        const store = useUserStore();
-
-        if (!store.isAuthenticated) {
-          return { name: "login" };
-        }
-      },
+      path: "/users",
+      name: "users",
+      component: UsersView,
+      beforeEnter: checkAuth,
     },
     {
-      path: "/admin",
-      name: "admin",
-      component: AdminView,
-      beforeEnter: () => {
-        const store = useUserStore();
-
-        if (!store.isAuthenticated) {
-          return { name: "login" };
-        }
-      },
+      path: "/upload",
+      name: "upload",
+      component: UploadView,
+      beforeEnter: checkAuth,
     },
   ],
 });

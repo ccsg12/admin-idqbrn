@@ -1,4 +1,4 @@
-export * from "./admin";
 export * from "./login";
 export * from "./home";
-export * from "./register";
+export * from "./upload";
+export * from "./users";

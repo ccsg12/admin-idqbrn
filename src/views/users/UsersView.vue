@@ -71,7 +71,7 @@ import "./styles.scss";
 import { UsersService } from "@/services";
 
 export default defineComponent({
-  name: "RegisterView",
+  name: "UsersView",
 
   data() {
     return {
@@ -94,7 +94,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.navBarStore.setShowNavBar(false);
+    this.navBarStore.setShowNavBar(true);
   },
 
   computed: {

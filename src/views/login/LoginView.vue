@@ -79,7 +79,7 @@ export default defineComponent({
       };
 
       await this.userStore.login(payload);
-      await this.$router.push({ name: "admin" });
+      await this.$router.push({ name: "upload" });
     },
   },
 });
