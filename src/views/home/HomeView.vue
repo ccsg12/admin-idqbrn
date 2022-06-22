@@ -1,6 +1,4 @@
 <template>
-
-
   <v-container class="full-page">
     <v-row>
       <v-col cols="12" md="8">
@@ -8,7 +6,6 @@
           <div class="map-header">
             <h2>Mapa de doenças</h2>
           </div>
-          
 
           <div class="map-container">
             <l-map
@@ -73,14 +70,8 @@
           value-prop="id"
         />
 
-        
-  
-  
-  
-
-
         <info-card
-          v-for="item in covidData"
+          v-for="item in cardData"
           :key="item.title"
           :color="item.color"
           :data="item.data"
@@ -89,11 +80,6 @@
       </v-col>
     </v-row>
   </v-container>
-
-
-
-
-
 </template>
 
 <script lang="ts">
@@ -246,19 +232,16 @@ export default defineComponent({
         },
       ],
       cityChosen: null as CityDetails | null,
-      covidData: [
-       
+      cardData: [
         {
-          
           title: "Casos Acumulados",
           color: "#16a085",
           data: [
             {
               id: 5,
-              value: "",
+              value: 0,
               name: "",
             },
-           
           ],
         },
       ],
@@ -342,7 +325,7 @@ export default defineComponent({
     },
 
     mapCircleStyle(): MapCircleStyle {
-      console.log(this.totalCases)
+      console.log(this.totalCases);
       return {
         color: "red",
         fillColor: "#f03",
@@ -354,13 +337,9 @@ export default defineComponent({
     totalCases() {
       let result = 0;
 
-      console.log(this.filtro)
-
       this.filteredCities.forEach((city) => {
         result += this.cityCases(city);
       });
-
-      this.covidData[0].data[0].value = result;
 
       return result;
     },
@@ -373,6 +352,10 @@ export default defineComponent({
   watch: {
     cityChosen() {
       this.updateMapOptions();
+    },
+
+    totalCases() {
+      this.cardData[0].data[0].value = this.totalCases;
     },
   },
 
