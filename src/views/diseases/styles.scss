@@ -1,0 +1,18 @@
+@import "@/styles";
+
+.card {
+  background: $light-gray;
+}
+
+.page-navigation {
+  color: $primary;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.v-table.table {
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+  margin-top: 1rem;
+}

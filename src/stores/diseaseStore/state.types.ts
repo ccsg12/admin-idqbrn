@@ -6,12 +6,16 @@ export type Case = {
 };
 
 export type Disease = {
-  cities: City[];
+  cities: City[] | undefined;
   id: number;
   name: string;
-  totalCases: number;
+  prevention: string;
+  treatment: string;
+  totalCases?: number;
 };
 
 export type DiseasesState = {
   diseases: Disease[];
+  next: boolean,
+  count: number,
 };
