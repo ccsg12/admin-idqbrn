@@ -1,0 +1,12 @@
+@import "@/styles";
+
+.card {
+  background: $light-gray;
+}
+
+.page-navigation {
+  color: $primary;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+}

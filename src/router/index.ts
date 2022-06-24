@@ -2,7 +2,13 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores";
 
-import { HomeView, LoginView, UploadView, UsersView } from "@/views";
+import {
+  CitiesView,
+  HomeView,
+  LoginView,
+  UploadView,
+  UsersView,
+} from "@/views";
 
 const checkAuth = () => {
   const store = useUserStore();
@@ -21,20 +27,26 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: "/cities",
+      name: "cities",
+      component: CitiesView,
+      beforeEnter: checkAuth,
+    },
+    {
       path: "/login",
       name: "login",
       component: LoginView,
     },
     {
-      path: "/users",
-      name: "users",
-      component: UsersView,
-      beforeEnter: checkAuth,
-    },
-    {
       path: "/upload",
       name: "upload",
       component: UploadView,
+      beforeEnter: checkAuth,
+    },
+    {
+      path: "/users",
+      name: "users",
+      component: UsersView,
       beforeEnter: checkAuth,
     },
   ],

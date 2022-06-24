@@ -12,7 +12,7 @@ export type MapCircleStyle = {
   radius: number;
 };
 
-export type CasesDetails = Case & {
+export type CasesDetails = Partial<Case> & {
   disease: string | undefined;
 };
 

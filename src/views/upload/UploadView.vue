@@ -37,6 +37,7 @@ const uploadFilesService = new UploadFilesService();
 
 export default defineComponent({
   name: "UploadView",
+
   data() {
     return {
       currentFile: undefined,

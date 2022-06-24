@@ -366,7 +366,7 @@ export default defineComponent({
       let result = 0;
 
       city.casesDetails.forEach(({ total }) => {
-        result += total;
+        result += total ?? 0;
       });
 
       return result;

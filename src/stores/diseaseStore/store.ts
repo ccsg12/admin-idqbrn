@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import type { DiseasesState } from "@/stores";
 
+import type { DiseasesState } from "@/stores";
 import { DiseasesService } from "@/services";
 
 export const useDiseaseStore = defineStore("disease", {

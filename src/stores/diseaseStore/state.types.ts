@@ -1,11 +1,4 @@
-export type City = {
-  cases: Case;
-  id: number;
-  latitude: number;
-  longitude: number;
-  name: string;
-  state: string;
-};
+import type { City } from "@/stores";
 
 export type Case = {
   id: number;
