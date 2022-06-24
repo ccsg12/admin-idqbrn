@@ -1,5 +1,10 @@
-import type { Case, City, ResumedCity } from "@/stores";
-import type { ApiCase, ApiCity, ApiResumedCity } from "@/services";
+import type { Case, City, ResumedCity, ResumedDisease } from "@/stores";
+import type {
+  ApiCase,
+  ApiCity,
+  ApiResumedCity,
+  ApiResumedDisease,
+} from "@/services";
 
 export const TypesHelper = {
   apiCaseToCase: (item: ApiCase): Case => {
@@ -32,6 +37,15 @@ export const TypesHelper = {
     };
   },
 
+  apiResumedDiseaseToResumedDisease: (
+    disease: ApiResumedDisease
+  ): ResumedDisease => {
+    return {
+      id: disease.id,
+      name: disease.nome,
+    };
+  },
+
   caseToApiCase: (item: Case): ApiCase => {
     return {
       id: item.id,
@@ -58,6 +72,15 @@ export const TypesHelper = {
       id: city.id,
       nome: city.name,
       estado: city.state,
+    };
+  },
+
+  resumedDiseaseToApiResumedDisease: (
+    disease: ResumedDisease
+  ): ApiResumedDisease => {
+    return {
+      id: disease.id,
+      nome: disease.name,
     };
   },
 };

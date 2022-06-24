@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 import type { Case, CasesState, DetailedCase } from "@/stores";
-import { useCitiesStore } from "@/stores";
+import { useCitiesStore, useDiseaseStore } from "@/stores";
 import { CasesService } from "@/services";
 import { TypesHelper } from "@/helpers";
 
@@ -14,18 +14,24 @@ export const useCasesStore = defineStore("cases", {
 
   getters: {
     detailedCases(state): DetailedCase[] {
-      const cityStore = useCitiesStore();
+      const citiesStore = useCitiesStore();
+      const diseasesStore = useDiseaseStore();
 
       return state.cases.map((item) => {
-        const city = cityStore.resumedCities.find(
+        const city = citiesStore.resumedCities.find(
           ({ id }) => id === item.cityId
         );
 
-        if (city) {
+        const disease = diseasesStore.resumedDiseases.find(
+          ({ id }) => id === item.diseaseId
+        );
+
+        if (city && disease) {
           return {
             ...item,
             city: city.name,
             state: city.state,
+            disease: disease.name,
           };
         }
       });

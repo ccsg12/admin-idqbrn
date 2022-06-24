@@ -1,12 +1,16 @@
 import type { City } from "@/stores";
 
-export type Disease = {
+export type Disease = ResumedDisease & {
   cities: City[];
+  totalCases: number;
+};
+
+export type ResumedDisease = {
   id: number;
   name: string;
-  totalCases: number;
 };
 
 export type DiseasesState = {
   diseases: Disease[];
+  resumedDiseases: ResumedDisease[];
 };

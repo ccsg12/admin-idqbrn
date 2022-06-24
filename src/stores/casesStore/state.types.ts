@@ -9,6 +9,7 @@ export type DetailedCase =
   | (Case & {
       city: string;
       state: string;
+      disease: string;
     })
   | undefined;
 
