@@ -1,40 +1,34 @@
 <template>
   <v-container class="full-page">
     <div>
-      <h2 class="mb-4">Lista de cidades</h2>
+      <h2 class="mb-4">Lista de casos</h2>
 
-      <update-create-city />
+      <update-create-case />
 
       <v-table class="table" fixed-header height="500px">
         <thead>
           <tr>
-            <th>Id</th>
-            <th>Nome</th>
-            <th>Código IBGE</th>
+            <th>Doença</th>
+            <th>Cidade</th>
             <th>Estado</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>População</th>
+            <th>Quantidade</th>
             <th>Ações</th>
           </tr>
 
-          <tr v-for="city in cities" :key="city.id">
-            <td>{{ city.id }}</td>
-            <td>{{ city.name }}</td>
-            <td>{{ city.ibgeCode }}</td>
-            <td>{{ city.state }}</td>
-            <td>{{ city.latitude }}</td>
-            <td>{{ city.longitude }}</td>
-            <td>{{ city.population }}</td>
+          <tr v-for="item in detailedCases" :key="item.id">
+            <td>{{ item.disease }}</td>
+            <td>{{ item.city }}</td>
+            <td>{{ item.state }}</td>
+            <td>{{ item.total }}</td>
             <td>
-              <update-create-city :data="city" :edit="true" />
+              <update-create-case :data="item" :edit="true" />
 
               <v-btn
                 class="ml-2"
                 color="error"
                 icon="mdi-trash-can-outline"
                 size="x-small"
-                @click="() => deleteCity(city.id)"
+                @click="() => deleteCase(item.id)"
               ></v-btn>
             </td>
           </tr>
@@ -61,19 +55,19 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapActions, mapState } from "pinia";
+import { mapActions, mapGetters, mapState } from "pinia";
 
-import { useCitiesStore, useNavBarStore } from "@/stores";
-import UpdateCreateCity from "./UpdateCreateCity.vue";
+import { useCasesStore, useNavBarStore } from "@/stores";
+import UpdateCreateCase from "./UpdateCreateCase.vue";
 
 import "./styles.scss";
-import { CitiesService } from "@/services";
+import { CasesService } from "@/services";
 
 export default defineComponent({
-  name: "CitiesView",
+  name: "CasesView",
 
   components: {
-    UpdateCreateCity,
+    UpdateCreateCase,
   },
 
   data() {
@@ -84,21 +78,22 @@ export default defineComponent({
 
   async mounted() {
     this.setShowNavBar(true);
-    await this.loadCities(this.page);
+    await this.loadCases(this.page);
   },
 
   computed: {
-    ...mapState(useCitiesStore, ["cities", "next", "count"]),
+    ...mapState(useCasesStore, ["next", "count"]),
+    ...mapGetters(useCasesStore, ["detailedCases"]),
   },
 
   methods: {
     ...mapActions(useNavBarStore, ["setShowNavBar"]),
-    ...mapActions(useCitiesStore, ["loadCities", "removeCity"]),
+    ...mapActions(useCasesStore, ["loadCases", "removeCase"]),
 
     async changePage(value: number) {
       this.page += value;
 
-      await this.loadCities(this.page);
+      await this.loadCases(this.page);
     },
 
     async deleteCase(id: number) {
@@ -112,9 +107,9 @@ export default defineComponent({
       });
 
       if (result.isConfirmed) {
-        CitiesService.remove(id)
+        CasesService.remove(id)
           .then(() => {
-            this.removeCity(id);
+            this.removeCase(id);
 
             this.$swal({
               icon: "success",

@@ -1,3 +1,4 @@
+export * from "./casesService";
 export * from "./citiesService";
 export * from "./diseasesService";
 export * from "./uploadFilesService";

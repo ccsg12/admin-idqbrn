@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "@/stores";
 
 import {
+  CasesView,
   CitiesView,
   HomeView,
   LoginView,
@@ -25,6 +26,12 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+    },
+    {
+      path: "/cases",
+      name: "cases",
+      component: CasesView,
+      beforeEnter: checkAuth,
     },
     {
       path: "/cities",

@@ -7,12 +7,13 @@ import { CitiesService } from "@/services";
 export const useCitiesStore = defineStore("cities", {
   state: (): CitiesState => ({
     cities: [],
-    next: false,
     count: 0,
+    next: false,
+    resumedCities: [],
   }),
 
   actions: {
-    async createCity(city: Omit<City, "cases">) {
+    createCity(city: Omit<City, "cases">) {
       this.cities.push({ ...city, cases: undefined });
     },
 
@@ -30,6 +31,22 @@ export const useCitiesStore = defineStore("cities", {
       }
     },
 
+    async loadResumedCities() {
+      try {
+        const response = await CitiesService.loadResumedCities();
+
+        this.resumedCities = response.map((city) =>
+          TypesHelper.apiResumedCityToResumedCity(city)
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    removeCity(id: number) {
+      this.cities = this.cities.filter((city) => city.id !== id);
+    },
+
     updateCity(city: Omit<City, "cases">) {
       const index = this.cities.findIndex(({ id }) => id === city.id);
 
@@ -37,10 +54,6 @@ export const useCitiesStore = defineStore("cities", {
         ...city,
         cases: undefined,
       };
-    },
-
-    removeCity(id: number) {
-      this.cities = this.cities.filter((city) => city.id !== id);
     },
   },
 });

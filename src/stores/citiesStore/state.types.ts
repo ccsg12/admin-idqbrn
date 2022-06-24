@@ -1,18 +1,22 @@
 import type { Case } from "@/stores";
 
-export type City = {
+export type City = ResumedCity & {
   cases: Case | undefined;
   ibgeCode?: number;
-  id: number;
   latitude: number;
   longitude: number;
-  name: string;
   population?: number;
+};
+
+export type ResumedCity = {
+  id: number;
+  name: string;
   state: string;
 };
 
 export type CitiesState = {
+  cities: City[];
   count: number;
   next: boolean;
-  cities: City[];
+  resumedCities: ResumedCity[];
 };

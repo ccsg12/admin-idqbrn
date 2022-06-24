@@ -1,7 +1,11 @@
 import { AxiosConfigApi } from "@/api";
 import type { AxiosResponse } from "axios";
 
-import type { ApiCity, CitiesResponse } from "@/services";
+import type {
+  ApiCity,
+  CitiesResponse,
+  ResumedCitiesResponse,
+} from "@/services";
 
 export const CitiesService = {
   create: async (city: ApiCity) => {
@@ -21,6 +25,13 @@ export const CitiesService = {
           perPage,
         },
       });
+
+    return response.data;
+  },
+
+  loadResumedCities: async () => {
+    const response: AxiosResponse<ResumedCitiesResponse> =
+      await AxiosConfigApi.api().get("/cities/resumed");
 
     return response.data;
   },
