@@ -1,11 +1,14 @@
 <template>
   <v-container class="full-page">
     <div>
-      <h2>Lista de cidades</h2>
+      <h2 class="mb-4">Lista de cidades</h2>
 
-      <v-table fixed-header height="500px">
+      <update-create-city />
+
+      <v-table class="table" fixed-header height="500px">
         <thead>
           <tr>
+            <th>Id</th>
             <th>Nome</th>
             <th>Código IBGE</th>
             <th>Estado</th>
@@ -16,6 +19,7 @@
           </tr>
 
           <tr v-for="city in cities" :key="city.id">
+            <td>{{ city.id }}</td>
             <td>{{ city.name }}</td>
             <td>{{ city.ibgeCode }}</td>
             <td>{{ city.state }}</td>
@@ -23,7 +27,15 @@
             <td>{{ city.longitude }}</td>
             <td>{{ city.population }}</td>
             <td>
-              <edit-city-modal :data="city" />
+              <update-create-city :data="city" :edit="true" />
+
+              <v-btn
+                class="ml-2"
+                color="error"
+                icon="mdi-trash-can-outline"
+                size="x-small"
+                @click="() => deleteCity(city.id)"
+              ></v-btn>
             </td>
           </tr>
         </thead>
@@ -52,15 +64,16 @@ import { defineComponent } from "vue";
 import { mapActions, mapState } from "pinia";
 
 import { useCitiesStore, useNavBarStore } from "@/stores";
-import EditCityModal from "./EditCityModal.vue";
+import UpdateCreateCity from "./UpdateCreateCity.vue";
 
 import "./styles.scss";
+import { CitiesService } from "@/services";
 
 export default defineComponent({
   name: "CitiesView",
 
   components: {
-    EditCityModal,
+    UpdateCreateCity,
   },
 
   data() {
@@ -80,12 +93,43 @@ export default defineComponent({
 
   methods: {
     ...mapActions(useNavBarStore, ["setShowNavBar"]),
-    ...mapActions(useCitiesStore, ["loadCities"]),
+    ...mapActions(useCitiesStore, ["loadCities", "removeCity"]),
 
     async changePage(value: number) {
       this.page += value;
 
       await this.loadCities(this.page);
+    },
+
+    async deleteCity(id: number) {
+      const result = await this.$swal({
+        icon: "warning",
+        title: "Atenção!",
+        text: "Você deseja mesmo deletar esse registro?",
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+        showCancelButton: true,
+      });
+
+      if (result.isConfirmed) {
+        CitiesService.remove(id)
+          .then(() => {
+            this.removeCity(id);
+
+            this.$swal({
+              icon: "success",
+              title: "Sucesso",
+              text: "Registro removido com sucesso.",
+            });
+          })
+          .catch(() => {
+            this.$swal({
+              icon: "error",
+              title: "Erro",
+              text: "Ocorreu um erro ao tentar remover o registro.",
+            });
+          });
+      }
     },
   },
 });
