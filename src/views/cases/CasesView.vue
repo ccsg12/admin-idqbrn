@@ -3,7 +3,7 @@
     <div>
       <h2 class="mb-4">Lista de casos</h2>
 
-      <update-create-case />
+      <!--      <update-create-case />-->
 
       <v-table class="table" fixed-header height="500px">
         <thead>
