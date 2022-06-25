@@ -63,7 +63,7 @@ export default defineComponent({
 
   async mounted() {
     this.loadUserState();
-    await this.loadDiseases();
+    await this.loadDiseasesWithCities();
   },
 
   computed: {
@@ -72,7 +72,7 @@ export default defineComponent({
 
   methods: {
     ...mapActions(useUserStore, ["loadUserState", "resetUserState"]),
-    ...mapActions(useDiseaseStore, ["loadDiseases"]),
+    ...mapActions(useDiseaseStore, ["loadDiseasesWithCities"]),
 
     logout() {
       this.resetUserState();

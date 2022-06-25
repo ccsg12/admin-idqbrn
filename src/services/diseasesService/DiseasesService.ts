@@ -1,7 +1,7 @@
 import { AxiosConfigApi } from "@/api";
 import type { AxiosResponse } from "axios";
 
-
+import type { Disease } from "@/stores";
 import type { ApiDisease, DiseasesResponse } from "@/services";
 
 export const DiseasesService = {
@@ -13,7 +13,11 @@ export const DiseasesService = {
 
     return response.data;
   },
-
+  loadDiseasesWithCities: async () => {
+    const response: AxiosResponse<Disease[]> = await AxiosConfigApi.api().get(
+      "/diseases/cities");
+      return response.data;
+    },
   loadDiseases: async (page: number, perPage: number) => {
     const response: AxiosResponse<DiseasesResponse> =
       await AxiosConfigApi.api().get("/diseases", {

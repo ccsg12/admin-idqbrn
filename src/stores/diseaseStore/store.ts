@@ -42,5 +42,14 @@ export const useDiseaseStore = defineStore("disease", {
     removeDisease(id: number) {
       this.diseases = this.diseases.filter((disease) => disease.id !== id);
     },
+    async loadDiseasesWithCities() {
+        try {
+          if (this.diseases.length === 0) {
+            this.diseases = await DiseasesService.loadDiseasesWithCities();
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
   },
 });
