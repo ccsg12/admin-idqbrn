@@ -34,6 +34,14 @@ export const useCasesStore = defineStore("cases", {
             disease: disease.name,
           };
         }
+
+        return {
+          city: "",
+          state: "",
+          disease: "",
+          id: 0,
+          total: 0,
+        };
       });
     },
   },

@@ -123,7 +123,7 @@ import { CitiesService } from "@/services";
 import { TypesHelper } from "@/helpers";
 
 export default defineComponent({
-  name: "EditUpdateCity",
+  name: "UpdateCreateCity",
 
   props: {
     data: {

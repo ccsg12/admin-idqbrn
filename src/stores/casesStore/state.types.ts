@@ -5,13 +5,11 @@ export type Case = {
   total: number;
 };
 
-export type DetailedCase =
-  | (Case & {
-      city: string;
-      state: string;
-      disease: string;
-    })
-  | undefined;
+export type DetailedCase = Case & {
+  city: string;
+  state: string;
+  disease: string;
+};
 
 export type CasesState = {
   cases: Case[];
