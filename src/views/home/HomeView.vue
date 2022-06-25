@@ -41,7 +41,7 @@
       <v-col cols="12" md="4">
         <multiselect
           v-model="diseaseChosen"
-          :options="diseases"
+          :options="diseasesWithCities"
           class="mb-4"
           label="name"
           object
@@ -249,7 +249,7 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState(useDiseaseStore, ["diseases"]),
+    ...mapState(useDiseaseStore, ["diseasesWithCities"]),
 
     filteredCities(): CityDetails[] {
       let cities: CityDetails[] = [];
@@ -257,7 +257,7 @@ export default defineComponent({
       if (this.diseaseChosen) {
         cities = this.diseaseChosen.cities;
       } else {
-        this.diseases.forEach((disease) => {
+        this.diseasesWithCities.forEach((disease) => {
           disease.cities.forEach((city) => {
             const filteredCity = cities.find(({ id }) => city.id === id);
 
@@ -308,7 +308,7 @@ export default defineComponent({
           }
         });
       } else {
-        this.diseases.forEach((disease) => {
+        this.diseasesWithCities.forEach((disease) => {
           disease.cities.forEach((city) => {
             const state = this.states.find(
               ({ abbreviation }) => city.state === abbreviation

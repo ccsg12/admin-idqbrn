@@ -1,8 +1,13 @@
 import type { City } from "@/stores";
 
 export type Disease = ResumedDisease & {
+  prevention?: string;
+  treatment: string;
+  totalCases?: number;
+};
+
+export type DiseaseWithCities = Disease & {
   cities: City[];
-  totalCases: number;
 };
 
 export type ResumedDisease = {
@@ -12,5 +17,8 @@ export type ResumedDisease = {
 
 export type DiseasesState = {
   diseases: Disease[];
+  diseasesWithCities: DiseaseWithCities[];
   resumedDiseases: ResumedDisease[];
+  next: boolean;
+  count: number;
 };

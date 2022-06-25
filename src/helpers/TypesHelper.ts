@@ -1,7 +1,14 @@
-import type { Case, City, ResumedCity, ResumedDisease } from "@/stores";
+import type {
+  Case,
+  City,
+  Disease,
+  ResumedCity,
+  ResumedDisease,
+} from "@/stores";
 import type {
   ApiCase,
   ApiCity,
+  ApiDisease,
   ApiResumedCity,
   ApiResumedDisease,
 } from "@/services";
@@ -26,6 +33,16 @@ export const TypesHelper = {
       population: city.populacao,
       latitude: city.latitude,
       longitude: city.longitude,
+    };
+  },
+
+  apiDiseaseToDisease: (disease: ApiDisease): Disease => {
+    return {
+      id: disease.id,
+      cities: undefined,
+      name: disease.nome,
+      prevention: disease.prevencao,
+      treatment: disease.tratamento,
     };
   },
 
@@ -64,6 +81,15 @@ export const TypesHelper = {
       populacao: city.population,
       latitude: city.latitude,
       longitude: city.longitude,
+    };
+  },
+
+  diseaseToApiDisease: (disease: Disease): ApiDisease => {
+    return {
+      id: disease.id,
+      nome: disease.name,
+      prevencao: disease.prevention,
+      tratamento: disease.treatment,
     };
   },
 

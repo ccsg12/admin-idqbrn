@@ -1,13 +1,10 @@
 import type { CitiesState } from "@/stores";
 
-export type ApiCity = {
+export type ApiCity = ApiResumedCity & {
   codigoIBGE?: number;
-  id: number;
   latitude: number;
   longitude: number;
-  nome: string;
   populacao?: number;
-  estado: string;
 };
 
 export type ApiResumedCity = {

@@ -1,5 +1,6 @@
 export * from "./cases";
 export * from "./cities";
+export * from "./diseases";
 export * from "./login";
 export * from "./home";
 export * from "./upload";

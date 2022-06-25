@@ -5,6 +5,7 @@ import { useUserStore } from "@/stores";
 import {
   CasesView,
   CitiesView,
+  DiseasesView,
   HomeView,
   LoginView,
   UploadView,
@@ -37,6 +38,12 @@ const router = createRouter({
       path: "/cities",
       name: "cities",
       component: CitiesView,
+      beforeEnter: checkAuth,
+    },
+    {
+      path: "/diseases",
+      name: "diseases",
+      component: DiseasesView,
       beforeEnter: checkAuth,
     },
     {
