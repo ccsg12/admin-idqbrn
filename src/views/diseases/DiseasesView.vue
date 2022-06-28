@@ -5,21 +5,35 @@
 
       <update-create-disease />
 
-      <v-table class="table" fixed-header height="500px">
+      <v-table class="table" fixed-header height="400px">
         <thead>
           <tr>
-            <th>Id</th>
-            <th>Nome</th>
-            <th>Prevenção</th>
-            <th>Tratamento</th>
-            <th>Ações</th>
+            <th class="table-title">Id</th>
+            <th class="table-title">Nome</th>
+            <th class="table-title">Prevenção</th>
+            <th class="table-title">Tratamento</th>
+            <th class="table-title">Ações</th>
           </tr>
+        </thead>
 
+        <tbody>
           <tr v-for="disease in diseases" :key="disease.id">
             <td>{{ disease.id }}</td>
             <td>{{ disease.name }}</td>
-            <td>{{ disease.prevention }}</td>
-            <td>{{ disease.treatment }}</td>
+            <td>
+              {{
+                disease.prevention.length > 23
+                  ? disease.prevention.slice(0, 20) + "..."
+                  : disease.prevention
+              }}
+            </td>
+            <td>
+              {{
+                disease.treatment.length > 23
+                  ? disease.treatment.slice(0, 20) + "..."
+                  : disease.treatment
+              }}
+            </td>
             <td>
               <update-create-disease :data="disease" :edit="true" />
 
@@ -32,7 +46,7 @@
               ></v-btn>
             </td>
           </tr>
-        </thead>
+        </tbody>
       </v-table>
 
       <div class="d-flex">
@@ -43,7 +57,15 @@
           >Anterior</span
         >
 
-        <v-spacer></v-spacer>
+        <v-spacer />
+
+        <span>
+          {{ (page - 1) * perPage + 1 }} -
+          {{ page * perPage < count ? page * perPage : count }} de
+          {{ count }}
+        </span>
+
+        <v-spacer />
 
         <span v-if="next" class="page-navigation" @click="() => changePage(1)"
           >Próxima</span
@@ -73,12 +95,13 @@ export default defineComponent({
   data() {
     return {
       page: 1,
+      perPage: 20,
     };
   },
 
   async mounted() {
     this.setShowNavBar(true);
-    await this.loadDiseases(this.page);
+    await this.loadDiseases(this.page, this.perPage);
   },
 
   computed: {
@@ -92,7 +115,7 @@ export default defineComponent({
     async changePage(value: number) {
       this.page += value;
 
-      await this.loadDiseases(this.page);
+      await this.loadDiseases(this.page, this.perPage);
     },
 
     async deleteDisease(id: number) {

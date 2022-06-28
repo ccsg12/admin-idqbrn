@@ -13,7 +13,6 @@
               v-model="name"
               density="compact"
               label="Nome"
-              placeholder="Joao Antunes"
               variant="outlined"
             />
 
@@ -30,7 +29,6 @@
               v-model="email"
               density="compact"
               label="E-mail"
-              placeholder="joao@email.com"
               variant="outlined"
             />
 
@@ -40,7 +38,6 @@
               :type="passwordVisible ? 'text' : 'password'"
               density="compact"
               label="Senha"
-              placeholder="********"
               variant="outlined"
               @click:append-inner="passwordVisible = !passwordVisible"
             />

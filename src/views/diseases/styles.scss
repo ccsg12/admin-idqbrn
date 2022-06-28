@@ -15,6 +15,10 @@
   border: 1px solid #c4c4c4;
   border-radius: 5px;
   margin-top: 1rem;
+
+  .table-title {
+    z-index: 1;
+  }
 }
 
 .form-control {

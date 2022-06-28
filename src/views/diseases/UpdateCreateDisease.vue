@@ -20,7 +20,7 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12">
+            <v-col>
               <v-text-field
                 v-model="disease.name"
                 class="form-control"
@@ -32,28 +32,26 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12" md="6">
-              <v-text-field
+            <v-col>
+              <v-textarea
                 v-model="disease.prevention"
                 class="form-control"
-                density="comfortable"
                 hide-details
                 label="Prevenção"
-                required
+                rows="3"
                 variant="outlined"
-              ></v-text-field>
+              />
             </v-col>
 
-            <v-col cols="12" md="6">
-              <v-text-field
+            <v-col>
+              <v-textarea
                 v-model="disease.treatment"
                 class="form-control"
-                density="comfortable"
                 hide-details
                 label="Tratamento"
-                required
+                rows="3"
                 variant="outlined"
-              ></v-text-field>
+              />
             </v-col>
           </v-row>
         </v-container>

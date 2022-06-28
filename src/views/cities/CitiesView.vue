@@ -5,19 +5,21 @@
 
       <update-create-city />
 
-      <v-table class="table" fixed-header height="500px">
+      <v-table class="table" fixed-header height="400px">
         <thead>
           <tr>
-            <th>Id</th>
-            <th>Nome</th>
-            <th>Código IBGE</th>
-            <th>Estado</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>População</th>
-            <th>Ações</th>
+            <th class="table-title">Id</th>
+            <th class="table-title">Nome</th>
+            <th class="table-title">Código IBGE</th>
+            <th class="table-title">Estado</th>
+            <th class="table-title">Latitude</th>
+            <th class="table-title">Longitude</th>
+            <th class="table-title">População</th>
+            <th class="table-title">Ações</th>
           </tr>
+        </thead>
 
+        <tbody>
           <tr v-for="city in cities" :key="city.id">
             <td>{{ city.id }}</td>
             <td>{{ city.name }}</td>
@@ -38,7 +40,7 @@
               ></v-btn>
             </td>
           </tr>
-        </thead>
+        </tbody>
       </v-table>
 
       <div class="d-flex">
@@ -48,8 +50,15 @@
           @click="() => changePage(-1)"
           >Anterior</span
         >
+        <v-spacer />
 
-        <v-spacer></v-spacer>
+        <span>
+          {{ (page - 1) * perPage + 1 }} -
+          {{ page * perPage < count ? page * perPage : count }} de
+          {{ count }}
+        </span>
+
+        <v-spacer />
 
         <span v-if="next" class="page-navigation" @click="() => changePage(1)"
           >Próxima</span
@@ -79,12 +88,13 @@ export default defineComponent({
   data() {
     return {
       page: 1,
+      perPage: 50,
     };
   },
 
   async mounted() {
     this.setShowNavBar(true);
-    await this.loadCities(this.page);
+    await this.loadCities(this.page, this.perPage);
   },
 
   computed: {
@@ -98,7 +108,7 @@ export default defineComponent({
     async changePage(value: number) {
       this.page += value;
 
-      await this.loadCities(this.page);
+      await this.loadCities(this.page, this.perPage);
     },
 
     async deleteCase(id: number) {

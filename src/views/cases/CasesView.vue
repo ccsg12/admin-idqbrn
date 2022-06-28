@@ -5,16 +5,18 @@
 
       <!--      <update-create-case />-->
 
-      <v-table class="table" fixed-header height="500px">
+      <v-table class="table" fixed-header height="400px">
         <thead>
           <tr>
-            <th>Doença</th>
-            <th>Cidade</th>
-            <th>Estado</th>
-            <th>Quantidade</th>
-            <th>Ações</th>
+            <th class="table-title">Doença</th>
+            <th class="table-title">Cidade</th>
+            <th class="table-title">Estado</th>
+            <th class="table-title">Quantidade</th>
+            <th class="table-title">Ações</th>
           </tr>
+        </thead>
 
+        <tbody>
           <tr v-for="item in detailedCases" :key="item.id">
             <td>{{ item.disease }}</td>
             <td>{{ item.city }}</td>
@@ -32,7 +34,7 @@
               ></v-btn>
             </td>
           </tr>
-        </thead>
+        </tbody>
       </v-table>
 
       <div class="d-flex">
@@ -43,7 +45,15 @@
           >Anterior</span
         >
 
-        <v-spacer></v-spacer>
+        <v-spacer />
+
+        <span>
+          {{ (page - 1) * perPage + 1 }} -
+          {{ page * perPage < count ? page * perPage : count }} de
+          {{ count }}
+        </span>
+
+        <v-spacer />
 
         <span v-if="next" class="page-navigation" @click="() => changePage(1)"
           >Próxima</span
@@ -73,12 +83,13 @@ export default defineComponent({
   data() {
     return {
       page: 1,
+      perPage: 50,
     };
   },
 
   async mounted() {
     this.setShowNavBar(true);
-    await this.loadCases(this.page);
+    await this.loadCases(this.page, this.perPage);
   },
 
   computed: {
@@ -93,7 +104,7 @@ export default defineComponent({
     async changePage(value: number) {
       this.page += value;
 
-      await this.loadCases(this.page);
+      await this.loadCases(this.page, this.perPage);
     },
 
     async deleteCase(id: number) {
